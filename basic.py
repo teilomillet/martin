@@ -3,7 +3,6 @@ import fire
 from llama_index.core.agent import ReActAgent
 from llama_index.core.tools import FunctionTool
 from llama_index.llms.litellm import LiteLLM
-from llama_index.core.llms import ChatMessage
 from config import Config  # Check this import if running into issues
 
 # __________________________________________________________________________________________________
@@ -47,24 +46,12 @@ agent = ReActAgent.from_tools(tools, llm=llm, verbose=True)
 # Main function for CLI interaction
 def main():
     while True:
-        # Get user input first
         user_input = input("Please enter your message: ")
         if user_input.lower() == 'exit':
             print("Exiting...")
             break
-
-        # System message
-        system_message = ChatMessage(role="system", content="You are a pirate from the 18th.")
-
-        # User message
-        user_message = ChatMessage(role="user", content=user_input)
-
-        # Combine messages for conversation
-        messages = [system_message, user_message]
-
-        # Get response from the model
-        response = llm.chat(messages)
-        print("Agent response:", response)
+        response = agent.chat(user_input)
+        print("Agent response:", response.response)
 
 if __name__ == '__main__':
     fire.Fire(main)
