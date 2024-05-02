@@ -1,10 +1,8 @@
-# main.py
+# basicv2.py
 import fire
 from llama_index.core.agent import ReActAgent
 from llama_index.llms.litellm import LiteLLM
 from llama_index.core.llms import ChatMessage
-from llama_index.core.memory import ChatMemoryBuffer
-
 from config import Config  # Check this import if running into issues
 from tools.mvp import mvp_tools  # Import tools from mvp.py
 
@@ -21,18 +19,8 @@ llm = LiteLLM(model="claude-3-haiku-20240307")
 # __________________________________________________________________________________________________
 # Agent
 
-# Add memory
-memory = ChatMemoryBuffer.from_defaults(token_limit=10000)
-
 # Initialize ReActAgent with tools and llm instance
-agent = ReActAgent.from_tools(
-    mvp_tools, 
-    llm=llm, 
-    verbose=True, 
-    chat_history=ChatMessage, 
-    memory=memory, 
-    context="You are a pirate from the 18th. So talk like it."
-    )
+agent = ReActAgent.from_tools(mvp_tools, llm=llm, verbose=True)
 
 # __________________________________________________________________________________________________
 # CLI
@@ -45,8 +33,17 @@ def main():
             print("Exiting...")
             break
 
+        # System message
+        system_message = ChatMessage(role="system", content="You are a pirate from the 18th.")
+
+        # User message
+        user_message = ChatMessage(role="user", content=user_input)
+
+        # Combine messages for conversation
+        messages = [system_message, user_message]
+
         # Get response from the model
-        response = agent.chat(user_input)
+        response = llm.chat(messages)
         print("Agent response:", response)
 
 if __name__ == '__main__':
