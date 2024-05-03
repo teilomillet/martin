@@ -92,4 +92,25 @@ query_kg_tool = FunctionTool(
     metadata=query_kg_metadata
 )
 
-kg_tools = [load_data_tool, build_kg_tool, query_kg_tool]
+def build_cytoscape_graph(triplets):
+    """Converts KG triplets into a Cytoscape.js compatible format."""
+    nodes = set()
+    edges = []
+    for subj, pred, obj in triplets:
+        nodes.add(subj)
+        nodes.add(obj)
+        edges.append({
+            'data': {'source': subj, 'target': obj, 'label': pred}
+        })
+    cy_elements = {
+        'nodes': [{'data': {'id': node, 'label': node}} for node in nodes],
+        'edges': edges
+    }
+    return cy_elements
+
+cyto_graph_tool = FunctionTool(
+    fn=build_cytoscape_graph,
+    metadata=ToolMetadata(name="cyto_graph_builder", description="Builds a graph visualization for KG output.")
+)
+
+kg_tools = [load_data_tool, build_kg_tool, query_kg_tool, cyto_graph_tool]
