@@ -7,6 +7,7 @@ from llama_index.core.memory import ChatMemoryBuffer
 
 from config import Config  # Check this import if running into issues
 from tools.mvp import mvp_tools  # Import tools from mvp.py
+from tools.kg import kg_tools
 
 # __________________________________________________________________________________________________
 # LLM
@@ -26,14 +27,13 @@ memory = ChatMemoryBuffer.from_defaults(token_limit=10000)
 
 # Initialize ReActAgent with tools and llm instance
 agent = ReActAgent.from_tools(
-    mvp_tools, 
+    tools=mvp_tools + kg_tools,  # Concatenate the lists of tools
     llm=llm, 
     verbose=True, 
     chat_history=ChatMessage, 
     memory=memory, 
     context="You are a pirate from the 18th. So talk like it."
-    )
-
+)
 # __________________________________________________________________________________________________
 # CLI
 

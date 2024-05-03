@@ -26,7 +26,7 @@ storage_context = StorageContext.from_defaults(graph_store=graph_store)
 loader = WikipediaReader()
 
 documents = loader.load_data(
-    pages=["Graph theory"], auto_suggest=False
+    pages=["Ichthyotitan"], auto_suggest=False
 )
 
 kg_index = KnowledgeGraphIndex.from_documents(
@@ -34,9 +34,7 @@ kg_index = KnowledgeGraphIndex.from_documents(
     storage_context=storage_context,
     max_triplets_per_chunk=10,
     include_embeddings=True,
-    verbose=True,
 )
-
 
 rel_map = graph_store.get_rel_map()
 
