@@ -17,7 +17,7 @@ LiteLLM.anthropic_key = Config.ANTHROPIC_API_KEY
 # Initialize the LiteLLM model
 llm = LiteLLM(model="claude-3-haiku-20240307")
 
-# Build the Kuzu db
+# Build the Kuzu db 
 db = kuzu.Database("test1")
 graph_store = KuzuGraphStore(db)
 
@@ -26,7 +26,7 @@ storage_context = StorageContext.from_defaults(graph_store=graph_store)
 loader = WikipediaReader()
 
 documents = loader.load_data(
-    pages=["Ichthyotitan"], auto_suggest=False
+    pages=["Enzu"], auto_suggest=False
 )
 
 kg_index = KnowledgeGraphIndex.from_documents(

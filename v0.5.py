@@ -1,8 +1,7 @@
 from fastapi import FastAPI, Request, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-from llama_index.core.agent import AgentRunner, FunctionCallingAgentWorker, ReActAgentWorker
-from llama_index.agent.llm_compiler import LLMCompilerAgentWorker
+from llama_index.core.agent import ReActAgent
 from llama_index.llms.litellm import LiteLLM
 from llama_index.core.llms import ChatMessage
 from llama_index.core.storage.chat_store import SimpleChatStore
@@ -29,11 +28,8 @@ LiteLLM.anthropic_key = Config.ANTHROPIC_API_KEY
 # Initialize the LLM with a specific model configuration
 llm = LiteLLM(model="claude-3-haiku-20240307")
 
-
-# ___________________________________________________________________________
-
-# Create the LLM Compiler AGENT.
-agent_worker = ReActAgentWorker.from_tools(
+# Initialize the ReActAgent with specific tools and the LLM instance
+agent = ReActAgent.from_tools(
     tools=mvp_tools + kg_tools,
     llm=llm,
     verbose=True,
@@ -41,34 +37,6 @@ agent_worker = ReActAgentWorker.from_tools(
     memory=chat_memory,
     context="You are a pirate from the 18th century. Speak accordingly."
 )
-
-# Create the agent
-agent = AgentRunner(
-    agent_worker, 
-    verbose=True,
-    
-    )
-
-
-worker = FunctionCallingAgentWorker.from_tools(
-    tools=mvp_tools + kg_tools,
-    verbose=True
-)
-
-
-
-# Initialize the ReActAgent with specific tools and the LLM instance
-# agent = ReActAgent.from_tools(
-#     tools=mvp_tools + kg_tools,
-#     llm=llm,
-#     verbose=True,
-#     chat_history=ChatMessage,
-#     memory=chat_memory,
-#     context="You are a pirate from the 18th century. Speak accordingly."
-# )
-
-# ___________________________________________________________________________
-
 
 # Set up Jinja2 for HTML template rendering
 templates = Jinja2Templates(directory="templates")
